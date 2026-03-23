@@ -10,15 +10,6 @@ Text is pre-processed by game-specific Python pipelines that use [pinyiniser](ht
 |------|-----|--------------|--------|
 | [Shadowrun Returns](https://store.steampowered.com/app/234650/Shadowrun_Returns/) | [BepInEx plugin](shadowrun-returns/mod/) | [Python pipeline](shadowrun-returns/preprocessor/) | In development |
 
-## Repository Structure
-
-```
-├── cedict/                          Shared CC-CEDICT dictionary data
-├── shadowrun-returns/
-│   ├── mod/                         BepInEx plugin (C#, .NET 3.5)
-│   └── preprocessor/                .po file processor (Python)
-```
-
 ## Getting Started
 
 ### Preprocessor
