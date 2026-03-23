@@ -1,0 +1,26 @@
+---
+description: Shadowrun Returns Python preprocessor for Chinese .po file processing
+globs: shadowrun-returns/preprocessor/**
+alwaysApply: false
+---
+
+# Shadowrun Returns Preprocessor
+
+Python script that processes Chinese `.po` translation files for Shadowrun Returns.
+
+## What It Does
+
+- Reads `.po` files from `materials/translations/`
+- Uses `pinyiniser` to segment Chinese text and generate pinyin
+- Joins segments with zero-width spaces (U+200B) for the runtime mod to consume
+- Applies replacement passes: punctuation fixes, template token fixes, markup tag fixes, proper name pinyin joining
+- Outputs compiled `.mo` files
+
+## Dependencies
+
+- `polib` — .po/.mo file parsing
+- `pinyiniser` — Chinese tokenization, pinyin generation, special token handling (external library)
+
+## Running
+
+From `shadowrun-returns/preprocessor/`: `python main.py`

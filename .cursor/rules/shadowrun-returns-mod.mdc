@@ -1,0 +1,41 @@
+---
+description: Shadowrun Returns BepInEx mod architecture, game types, and investigation findings
+globs: shadowrun-returns/mod/**
+alwaysApply: false
+---
+
+# Shadowrun Returns Mod
+
+BepInEx mod for Shadowrun Returns (Unity 4.2.0f4). Hooks into NGUI text rendering for per-word interaction.
+
+## Tech Stack
+
+BepInEx 6.0.0-be.754, HarmonyX 2.10.2, Unity 4.2.0f4, .NET 3.5, Assembly-CSharp.dll (game types).
+
+## Entry Point
+
+`ShadowrunreturnsLanguageEngage` inherits `BaseUnityPlugin`. `Awake()` creates HarmonyX instance (`"matthewdelaney.ShadowRunReturnsLanguageEngage"`) and calls `PatchAll()`. Static `Log` property (`ManualLogSource`) for logging.
+
+## Conventions
+
+- Namespace: `ShadowrunReturnsLanguageEngage`
+- Patches: `internal static class`, named `{TargetType}{TargetMethod}Patch`, under `Features/{category}/`
+- Logging: `ShadowrunreturnsLanguageEngage.Log`
+
+## Game Types
+
+- `UIFont` — NGUI font renderer. `Print()` populates `BetterList<Vector3>` (verts) and `BetterList<Color>` (colors) by ref.
+- `UIPopupList` — NGUI popup component.
+- `BetterList<T>` — NGUI lightweight generic list. Use `.size` for count.
+
+## Key Findings
+
+- **ZWS (U+200B) produces no vertices** — passes `c < ' '` check but `mFont.GetGlyph('\u200B')` returns null. Same for spaces, color codes, escape sequences.
+- **Vertex quad index != string index** — explicit `glyphToStringIndex` map required.
+- **Quad winding**: `[0]`=(right,top), `[1]`=(right,bottom), `[2]`=(left,bottom), `[3]`=(left,top). Local space.
+- **Color codes are runtime-injected** — `{{EFD27B}}`, `{{-}}` added by dialogue system, not in `.po` files.
+- **Hit-testing**: `ConversationDragContents` has the collider. TextLabel is at sibling path `ConversationDragPanel/TextLabel`. Use `textLabel.InverseTransformPoint(lastHit.point)` — NOT `Camera.main`.
+
+## Build
+
+Requires `libs/Assembly-CSharp.dll` from game's `Managed/` folder. Build with `dotnet build` or VS 2022.

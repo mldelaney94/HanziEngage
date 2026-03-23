@@ -1,0 +1,24 @@
+---
+description: Next feature plan for Shadowrun Returns mod — word selection, highlight, dictionary popup
+globs: shadowrun-returns/mod/**
+alwaysApply: false
+---
+
+# Feature Plan: Word Selection, Highlight, and Dictionary Popup
+
+## Overview
+
+Hover over text, left-click to select/pin a word. Highlighted in rendered text. NGUI popup shows CEDICT definition. Arrow keys navigate words. Click away deselects.
+
+## Build Order
+
+1. **Selection state** — `Globals.cs`: `selectedWord`, `selectedStringStart`/`End`, `isWordSelected`
+2. **Click to select** — `UICameraProcessMousePatch.cs`: detect `Input.GetMouseButtonDown(0)`, set/clear selection
+3. **Highlight rendering** — `UIFontPrintPatch.cs`: add `BetterList<Color> cols` param, overwrite color entries for selected word's quads
+4. **CEDICT loader** — `Features/Dictionary/CEDICTLoader.cs`: parse CEDICT format, `Dictionary<string, CEDICTEntry>` keyed by simplified
+5. **NGUI popup** — `Features/Graphic/Popup/WordPopup.cs`: lazy GameObject with UILabel, position near selected word
+6. **Keyboard nav** — Left/Right arrow to navigate words via ZWS boundaries, Escape to clear
+
+## Open Risk
+
+Creating NGUI widgets dynamically (`UILabel`, `UISprite`, `UIPanel`) requires `NGUITools.AddWidget`/`AddChild` from Assembly-CSharp.dll — signatures unconfirmed. Fallback: clone existing widget's GameObject.
