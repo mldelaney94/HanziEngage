@@ -39,3 +39,8 @@ Copy the built DLL to your BepInEx `plugins/` folder inside the Shadowrun Return
 | HarmonyX | 2.10.2 |
 | Unity | 4.2.0f4 |
 | .NET Framework | 3.5 |
+
+## Make
+dotnet build; if ($?) { copy "bin\Debug\net35\ShadowrunReturnsLanguageEngage.dll" "C:\Program Files (x86)\Steam\steamapps\common\Shadowrun Returns\BepInEx\plugins\" -Force }
+
+
