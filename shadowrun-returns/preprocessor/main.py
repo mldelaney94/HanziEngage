@@ -1,3 +1,4 @@
+from polib import POEntry
 import polib
 import pinyiniser as pyer
 
@@ -209,12 +210,15 @@ def main():
   SPECIAL_TOKENS = MARKUP_TOKENS | TEMPLATE_TOKENS | pyer.special_tokens
   REPLACEMENTS = PROPER_NAME_REPLACEMENTS | PUNCTUATION_REPLACEMENTS | MISC_REPLACEMENTS
 
-  handle_seattle(d, SPECIAL_TOKENS, REPLACEMENTS)
-  handle_deadmanswitch(d, SPECIAL_TOKENS, REPLACEMENTS)
+  seattle_pofile = add_pinyin('./materials/translations/zh_seattle_original.po', d, SPECIAL_TOKENS, REPLACEMENTS)
+  deadmanswitch_pofile = add_pinyin('./materials/translations/zh_deadmanswitch_original.po', d, SPECIAL_TOKENS, REPLACEMENTS)
 
-def handle_deadmanswitch(d, SPECIAL_TOKENS, REPLACEMENTS):
-  pofile = polib.pofile('./materials/translations/zh_deadmanswitch_original.po')
-  for idx, entry in enumerate(pofile):
+  seattle_pofile.save_as_mofile('zh_seattle.mo')
+  deadmanswitch_pofile.save_as_mofile('zh_deadmanswitch.mo')
+
+def add_pinyin(path_to_pofile, d, SPECIAL_TOKENS, REPLACEMENTS):
+  pofile = polib.pofile(path_to_pofile)
+  for idx, entry in enumerate[POEntry](pofile):
     chinese, pinyin = pyer.get_segments_and_pinyin(entry.msgstr, d, SPECIAL_TOKENS)
     chinese = '\u200B'.join(chinese)
     pinyin = ' '.join(pinyin)
@@ -224,23 +228,7 @@ def handle_deadmanswitch(d, SPECIAL_TOKENS, REPLACEMENTS):
       pofile[idx].msgstr = chinese + '\n' + pinyin
     for old, new in REPLACEMENTS.items():
       pofile[idx].msgstr = pofile[idx].msgstr.replace(old, new)
-
-  pofile.save_as_mofile('zh_deadmanswitch.mo')
-
-def handle_seattle(d, SPECIAL_TOKENS, REPLACEMENTS):
-  pofile = polib.pofile('./materials/translations/zh_seattle_original.po')
-  for idx, entry in enumerate(pofile):
-    chinese, pinyin = pyer.get_segments_and_pinyin(entry.msgstr, d, SPECIAL_TOKENS)
-    chinese = '\u200B'.join(chinese)
-    pinyin = ' '.join(pinyin)
-    if (chinese.count('\n') > 1):
-      pofile[idx].msgstr = chinese + '\n\n' + pinyin
-    else:
-      pofile[idx].msgstr = chinese + '\n' + pinyin
-    for old, new in REPLACEMENTS.items():
-      pofile[idx].msgstr = pofile[idx].msgstr.replace(old, new)
-
-  pofile.save_as_mofile('zh_seattle.mo')
+  return pofile
 
 if __name__ == "__main__":
   main()
