@@ -2,7 +2,6 @@
 using HarmonyLib;
 using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using static UICamera;
 
@@ -12,7 +11,7 @@ namespace ShadowrunReturnsLanguageEngage
   internal static class UICameraProcessMousePatch
   {
     private static string lastWord = "";
-    private static readonly HashSet<string> acceptableParents = 
+    private static readonly HashSet<string> collisionNamesToCheck = 
       [
         "ConversationDragContents",
         "ConversationResponse(Clone)"
@@ -22,17 +21,13 @@ namespace ShadowrunReturnsLanguageEngage
     private static void Postfix(MouseOrTouch[] ___mMouse, RaycastHit ___lastHit)
     {
       if (___mMouse.Length == 0 || ___mMouse[0].current == null) return;
-
-      var hoveredName = ___mMouse[0].current.name;
-      if (!acceptableParents.Contains(hoveredName))
+      if (!collisionNamesToCheck.Contains(___mMouse[0].current.name))
       {
         lastWord = string.Empty;
         return;
       }
 
-      var parent = ___mMouse[0].current.transform.parent;
-
-      var textLabel = FindTextLabel(parent, ___lastHit);
+      var textLabel = FindTextLabel(___lastHit.point);
 
       if (textLabel == null)
       {
@@ -51,27 +46,20 @@ namespace ShadowrunReturnsLanguageEngage
       if (word.Length > 0 && word != lastWord)
       {
         lastWord = word;
+        ShadowrunreturnsLanguageEngage.Log.LogInfo($"{lastWord}");
       }
     }
 
-    private static LabelDataObject FindTextLabel(Transform parent, RaycastHit lastHit)
+    private static LabelDataObject FindTextLabel(Vector3 lastHit)
     {
-      var labels = parent.GetComponentsInChildren<UILabel>();
-
-      foreach (var parentLabel in labels)
+      foreach (var label in Globals.LabelRegistry.Values)
       {
-        foreach (var label in Globals.LabelRegistry)
+        if (label.transform == null) continue;
+        var localPoint = label.transform.InverseTransformPoint(lastHit);
+        int boundsHit = PointIsInBoxes(localPoint, label.corners);
+        if (boundsHit >= 0)
         {
-          bool textMatch = label.text == parentLabel.text;
-          if (!textMatch) continue;
-
-          var localPoint = label.transform.InverseTransformPoint(lastHit.point);
-          int boundsHit = PointIsInBoxes(localPoint, label.corners);
-
-          if (boundsHit >= 0)
-          {
-            return label;
-          }
+          return label;
         }
       }
 

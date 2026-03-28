@@ -1,3 +1,4 @@
+using HarmonyLib;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,15 +8,18 @@ namespace ShadowrunReturnsLanguageEngage.Features.LabelDataObject
   {
     public BetterList<Vector3> corners = new ();
     public string text = string.Empty;
-    public Transform transform = new ();
+    public Transform transform;
     public List<int> textIndices = [];
     public BetterList<Vector3> textQuads = new ();
     public BetterList<Color> colors = new();
 
-    public LabelDataObject(UILabel label)
+    public LabelDataObject(UILabel label, BetterList<Color> colors, BetterList<Vector3> textQuads, string text, List<int> textIndices)
     {
       transform = label.transform;
-      text = label.text;
+      this.text = text;
+      this.colors = colors;
+      this.textQuads = textQuads;
+      this.textIndices = textIndices;
 
       corners = CalculateCorners(label);
     }

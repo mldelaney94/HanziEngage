@@ -3,5 +3,6 @@ using System.Collections.Generic;
 
 public static class Globals
 {
-  public static List<LabelDataObject> LabelRegistry = [];
+  public static Dictionary<UILabel, LabelDataObject> LabelRegistry = [];
+  public static UILabel currentRenderingLabel = null;
 }

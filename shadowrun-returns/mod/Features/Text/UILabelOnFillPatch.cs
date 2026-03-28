@@ -22,8 +22,13 @@ namespace ShadowrunReturnsLanguageEngage
       if (Actions.ContainsKey(name))
       {
         __instance.text = Actions[name].Invoke(__instance.text);
-        Globals.LabelRegistry.Add(new LabelDataObject(__instance));
+        Globals.currentRenderingLabel = __instance;
       }
+    }
+
+    private static void Postfix()
+    {
+      Globals.currentRenderingLabel = null;
     }
 
     // NameLabel text arrives as "Chinese\npin yin" — collapse pinyin spaces

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
 using UnityEngine;
 
 namespace ShadowrunReturnsLanguageEngage
@@ -16,7 +17,7 @@ namespace ShadowrunReturnsLanguageEngage
       )
     {
       var indexMap = BuildIndexMap(text, encoding);
-      
+
       int expectedQuadCount = verts.size / 4;
 
       if (expectedQuadCount != indexMap.Count)
@@ -26,14 +27,9 @@ namespace ShadowrunReturnsLanguageEngage
         );
       }
 
-      foreach (var label in Globals.LabelRegistry)
+      if (Globals.currentRenderingLabel != null)
       {
-        if (label.text == text)
-        {
-          label.textQuads = verts;
-          label.colors = cols;
-          label.textIndices = indexMap;
-        }
+        Globals.LabelRegistry[Globals.currentRenderingLabel] = new LabelDataObject(Globals.currentRenderingLabel, cols, verts, text, indexMap);
       }
     }
 
