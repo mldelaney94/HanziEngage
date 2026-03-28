@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace ShadowrunReturnsLanguageEngage
     private static void Postfix(
         string text,
         BetterList<Vector3> verts,
+        BetterList<Color> cols,
         bool encoding,
         UIFont __instance
       )
@@ -22,7 +22,7 @@ namespace ShadowrunReturnsLanguageEngage
       if (expectedQuadCount != indexMap.Count)
       {
         ShadowrunreturnsLanguageEngage.Log.LogWarning(
-          $"Index map mismatch: {indexMap.Count} mapped vs {expectedQuadCount} quads"
+          $"[Print Postfix] Index map MISMATCH: {indexMap.Count} mapped vs {expectedQuadCount} quads"
         );
       }
 
@@ -30,7 +30,8 @@ namespace ShadowrunReturnsLanguageEngage
       {
         if (label.text == text)
         {
-          label.textQuads = verts.ToArray().ToList();
+          label.textQuads = verts;
+          label.colors = cols;
           label.textIndices = indexMap;
         }
       }

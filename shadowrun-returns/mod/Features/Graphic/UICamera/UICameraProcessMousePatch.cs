@@ -2,6 +2,7 @@
 using HarmonyLib;
 using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static UICamera;
 
@@ -21,43 +22,53 @@ namespace ShadowrunReturnsLanguageEngage
     private static void Postfix(MouseOrTouch[] ___mMouse, RaycastHit ___lastHit)
     {
       if (___mMouse.Length == 0 || ___mMouse[0].current == null) return;
-      if (!acceptableParents.Contains(___mMouse[0].current.name))
+
+      var hoveredName = ___mMouse[0].current.name;
+      if (!acceptableParents.Contains(hoveredName))
       {
         lastWord = string.Empty;
         return;
       }
 
-      // the mouse collides with ConversationDragPanel, which does not contain a TextLabel
-      // however, as visually it contains the text, it must be stacked somewhere underneath the drag panels parent
       var parent = ___mMouse[0].current.transform.parent;
+
       var textLabel = FindTextLabel(parent, ___lastHit);
 
-      if (textLabel == null) return;
+      if (textLabel == null)
+      {
+        return;
+      }
 
       var textLabelPoint = textLabel.transform.InverseTransformPoint(___lastHit.point);
 
       var quadIndex = PointIsInBoxes(textLabelPoint, textLabel.textQuads);
-      if (quadIndex < 0) return;
+      if (quadIndex < 0)
+      {
+        return;
+      }
 
       string word = ExtractWord(quadIndex, textLabel);
       if (word.Length > 0 && word != lastWord)
       {
         lastWord = word;
-        ShadowrunreturnsLanguageEngage.Log.LogInfo(lastWord);
       }
     }
 
     private static LabelDataObject FindTextLabel(Transform parent, RaycastHit lastHit)
     {
-      // In conversations with NPC's, there are multiple TextLabels with no
-      // guaranteed order returned from GetComponentsInChildren.
-      // Thus we must also check which parentLabel the mouse is hovering over
       var labels = parent.GetComponentsInChildren<UILabel>();
+
       foreach (var parentLabel in labels)
       {
         foreach (var label in Globals.LabelRegistry)
         {
-          if (label.text == parentLabel.text && PointIsInBoxes(label.transform.InverseTransformPoint(lastHit.point), label.corners) >= 0)
+          bool textMatch = label.text == parentLabel.text;
+          if (!textMatch) continue;
+
+          var localPoint = label.transform.InverseTransformPoint(lastHit.point);
+          int boundsHit = PointIsInBoxes(localPoint, label.corners);
+
+          if (boundsHit >= 0)
           {
             return label;
           }
@@ -67,13 +78,13 @@ namespace ShadowrunReturnsLanguageEngage
       return null;
     }
 
-    private static int PointIsInBoxes(Vector3 localPoint, List<Vector3> boxes)
+    private static int PointIsInBoxes(Vector3 localPoint, BetterList<Vector3> boxes)
     {
-      if (boxes.Count % 4 != 0)
+      if (boxes.size % 4 != 0)
       {
-        ShadowrunreturnsLanguageEngage.Log.LogWarning($"Box collection size modulo 4 should be 0. Is ({boxes.Count} % 4 == {boxes.Count % 4})");
+        ShadowrunreturnsLanguageEngage.Log.LogWarning($"Box collection size modulo 4 should be 0. Is ({boxes.size} % 4 == {boxes.size % 4})");
       }
-      for (int i = 0; i < boxes.Count; i += 4)
+      for (int i = 0; i < boxes.size; i += 4)
       {
         // [0] = topright
         // [1] = bottomright
