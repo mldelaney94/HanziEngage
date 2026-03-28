@@ -1,4 +1,7 @@
 using HarmonyLib;
+using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
+using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace ShadowrunReturnsLanguageEngage
@@ -6,23 +9,20 @@ namespace ShadowrunReturnsLanguageEngage
   [HarmonyPatch(typeof(UILabel), nameof(UILabel.OnFill))]
   internal static class UILabelOnFillPatch
   {
+    private static readonly Dictionary<string, Func<string, string>> Actions = new()
+    {
+      { "NameLabel", FormatNameLabel },
+      { "TextLabel", FormatTextLabel }
+    };
+
     private static void Prefix(UILabel __instance)
     {
       var name = __instance.gameObject.name;
 
-      if (name == "NameLabel")
+      if (Actions.ContainsKey(name))
       {
-        __instance.text = FormatNameLabel(__instance.text);
-      }
-      else if (name == "TextLabel" && __instance.transform.parent.name == "ConversationDragPanel")
-      {
-        __instance.text = FormatTextLabel(__instance.text);
-      }
-      else
-      {
-        ShadowrunreturnsLanguageEngage.Log.LogWarning(
-          $"[OnFill Prefix] UNEXPECTED label=\"{name}\" — not NameLabel or TextLabel"
-        );
+        __instance.text = Actions[name].Invoke(__instance.text);
+        Globals.LabelRegistry.Add(new LabelDataObject(__instance));
       }
     }
 

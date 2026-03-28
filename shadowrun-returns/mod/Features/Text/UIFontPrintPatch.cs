@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
@@ -7,32 +8,31 @@ namespace ShadowrunReturnsLanguageEngage
   [HarmonyPatch(typeof(UIFont), nameof(UIFont.Print))]
   internal static class UIFontPrintPatch
   {
-    private static void Prefix(
-        ref string text
-      )
-    {
-      text = text.Replace("[ ", "[");
-      text = text.Replace(" ]", "]");
-    }
-
     private static void Postfix(
         string text,
         BetterList<Vector3> verts,
-        bool encoding
+        bool encoding,
+        UIFont __instance
       )
     {
-      Globals.speakerQuads = verts;
-      Globals.speakerText = text;
-      Globals.speakerQuadToIndexMap = BuildIndexMap(text, encoding);
-
+      var indexMap = BuildIndexMap(text, encoding);
+      
       int expectedQuadCount = verts.size / 4;
-      int mappedCount = Globals.speakerQuadToIndexMap.Count;
 
-      if (mappedCount != expectedQuadCount)
+      if (expectedQuadCount != indexMap.Count)
       {
         ShadowrunreturnsLanguageEngage.Log.LogWarning(
-          $"Index map mismatch: {mappedCount} mapped vs {expectedQuadCount} quads"
+          $"Index map mismatch: {indexMap.Count} mapped vs {expectedQuadCount} quads"
         );
+      }
+
+      foreach (var label in Globals.LabelRegistry)
+      {
+        if (label.text == text)
+        {
+          label.textQuads = verts.ToArray().ToList();
+          label.textIndices = indexMap;
+        }
       }
     }
 
