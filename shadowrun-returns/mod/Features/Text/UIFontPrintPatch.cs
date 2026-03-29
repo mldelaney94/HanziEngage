@@ -12,23 +12,22 @@ namespace ShadowrunReturnsLanguageEngage
         string text,
         BetterList<Vector3> verts,
         BetterList<Color> cols,
-        bool encoding,
-        UIFont __instance
+        bool encoding
       )
     {
-      var indexMap = BuildIndexMap(text, encoding);
-
-      int expectedQuadCount = verts.size / 4;
-
-      if (expectedQuadCount != indexMap.Count)
-      {
-        ShadowrunreturnsLanguageEngage.Log.LogWarning(
-          $"[Print Postfix] Index map MISMATCH: {indexMap.Count} mapped vs {expectedQuadCount} quads"
-        );
-      }
-
       if (Globals.currentRenderingLabel != null)
       {
+        var indexMap = BuildIndexMap(text, encoding);
+
+        int expectedQuadCount = verts.size / 4;
+
+        if (expectedQuadCount != indexMap.Count)
+        {
+          ShadowrunreturnsLanguageEngage.Log.LogWarning(
+            $"[Print Postfix] Index map MISMATCH: {indexMap.Count} mapped vs {expectedQuadCount} quads"
+          );
+        }
+
         Globals.LabelRegistry[Globals.currentRenderingLabel] = new LabelDataObject(Globals.currentRenderingLabel, cols, verts, text, indexMap);
       }
     }

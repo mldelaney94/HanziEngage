@@ -6,12 +6,12 @@ namespace ShadowrunReturnsLanguageEngage.Features.LabelDataObject
 {
   public class LabelDataObject
   {
-    public BetterList<Vector3> corners = new ();
-    public string text = string.Empty;
+    public BetterList<Vector3> corners;
+    public string text;
     public Transform transform;
-    public List<int> textIndices = [];
-    public BetterList<Vector3> textQuads = new ();
-    public BetterList<Color> colors = new();
+    public List<int> textIndices;
+    public BetterList<Vector3> textQuads;
+    public BetterList<Color> colors;
 
     public LabelDataObject(UILabel label, BetterList<Color> colors, BetterList<Vector3> textQuads, string text, List<int> textIndices)
     {
@@ -27,13 +27,13 @@ namespace ShadowrunReturnsLanguageEngage.Features.LabelDataObject
     private BetterList<Vector3> CalculateCorners(UILabel label)
     {
       // pivot offset ranges between 0 and 1
-      var x = label.relativeSize.x * (label.pivotOffset.x + 1);
-      var y = label.relativeSize.y * (label.pivotOffset.y - 1);
+      var right = label.relativeSize.x * (label.pivotOffset.x + 1);
+      var bottom = label.relativeSize.y * (label.pivotOffset.y - 1);
 
       var bounds = new BetterList<Vector3>();
-      bounds.Add(new Vector3(x, 0, 0));
+      bounds.Add(new Vector3(right, 0, 0));
       bounds.Add(Vector3.zero);
-      bounds.Add(new Vector3(0, y, 0));
+      bounds.Add(new Vector3(0, bottom, 0));
       bounds.Add(Vector3.zero);
 
       return bounds;

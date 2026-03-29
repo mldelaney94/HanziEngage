@@ -14,7 +14,8 @@ namespace ShadowrunReturnsLanguageEngage
     private static readonly HashSet<string> collisionNamesToCheck = 
       [
         "ConversationDragContents",
-        "ConversationResponse(Clone)"
+        "ConversationResponse(Clone)",
+        "ObjectivesDragPanelContents"
       ];
 
     // MouseOrTouch[] 0 is where what's underneath the mouse is
@@ -23,18 +24,18 @@ namespace ShadowrunReturnsLanguageEngage
       if (___mMouse.Length == 0 || ___mMouse[0].current == null) return;
       if (!collisionNamesToCheck.Contains(___mMouse[0].current.name))
       {
+        ShadowrunreturnsLanguageEngage.Log.LogInfo(___mMouse[0].current.name);
         lastWord = string.Empty;
         return;
       }
 
-      var textLabel = FindTextLabel(___lastHit.point);
+      Vector3 textLabelPoint;
+      var textLabel = FindTextLabel(___lastHit.point, out textLabelPoint);
 
       if (textLabel == null)
       {
         return;
       }
-
-      var textLabelPoint = textLabel.transform.InverseTransformPoint(___lastHit.point);
 
       var quadIndex = PointIsInBoxes(textLabelPoint, textLabel.textQuads);
       if (quadIndex < 0)
@@ -50,7 +51,7 @@ namespace ShadowrunReturnsLanguageEngage
       }
     }
 
-    private static LabelDataObject FindTextLabel(Vector3 lastHit)
+    private static LabelDataObject FindTextLabel(Vector3 lastHit, out Vector3 textLabelPoint)
     {
       foreach (var label in Globals.LabelRegistry.Values)
       {
@@ -59,10 +60,12 @@ namespace ShadowrunReturnsLanguageEngage
         int boundsHit = PointIsInBoxes(localPoint, label.corners);
         if (boundsHit >= 0)
         {
+          textLabelPoint = localPoint;
           return label;
         }
       }
 
+      textLabelPoint = Vector3.zero;
       return null;
     }
 
@@ -78,16 +81,15 @@ namespace ShadowrunReturnsLanguageEngage
         // [1] = bottomright
         // [2] = bottomleft
         // [3] = topleft
-        // so you only need two corners to know if we're inside the quad
+        // top left corner is always (0, 0), with y decreasing (downwards) and x increasing (rightwards),
+        // so you only need bottom right coords to know if you're inside the box
         var topRight = boxes[i];
-        var top = topRight.y;
         var right = topRight.x;
         var bottomLeft = boxes[i + 2];
         var bottom = bottomLeft.y;
-        var left = bottomLeft.x;
 
-        if (localPoint.y <= top && localPoint.y >= bottom
-          && localPoint.x <= right && localPoint.x >= left)
+        if (localPoint.y >= bottom && localPoint.x <= right
+          && localPoint.y <= 0 && localPoint.x >= 0)
         {
           return i;
         }
