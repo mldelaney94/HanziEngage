@@ -1,6 +1,5 @@
 #pragma warning disable Harmony003 // Harmony non-ref patch parameters modified throws a lot of false positives here
 using HarmonyLib;
-using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
 using System.Collections.Generic;
 using UnityEngine;
 using static UICamera;
@@ -59,8 +58,8 @@ namespace ShadowrunReturnsLanguageEngage
       {
         if (label.transform == null) continue;
         var localPoint = label.transform.InverseTransformPoint(lastHit);
-        int boundsHit = PointIsInBoxes(localPoint, label.corners);
-        if (boundsHit >= 0)
+        int isInLabel = PointIsInBoxes(localPoint, label.corners);
+        if (isInLabel >= 0)
         {
           textLabelPoint = localPoint;
           return label;

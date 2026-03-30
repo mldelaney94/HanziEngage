@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using HarmonyLib;
-using ShadowrunReturnsLanguageEngage.Features.LabelDataObject;
 using UnityEngine;
 
 namespace ShadowrunReturnsLanguageEngage
