@@ -27,6 +27,13 @@ namespace ShadowrunReturnsLanguageEngage
     {
       var root = NGUITools.FindInParents<UIRoot>(parentPanel.gameObject);
       panel = NGUITools.AddChild<UIPanel>(root.gameObject).gameObject;
+
+      var texture = NGUITools.AddWidget<UITexture>(panel.gameObject);
+      texture.alpha = 1;
+      texture.color = Color.black;
+      texture.transform.localScale = new Vector3(300, 400, 1f);
+      texture.material = new Material(Shader.Find("Unlit/Transparent Colored"));
+
       label = NGUITools.AddWidget<UILabel>(panel.gameObject);
 
       foreach (var key in Globals.LabelRegistry.Keys)
