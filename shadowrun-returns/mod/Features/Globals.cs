@@ -6,5 +6,6 @@ namespace ShadowrunReturnsLanguageEngage
   {
     public static Dictionary<UILabel, LabelDataObject> LabelRegistry = [];
     public static UILabel currentRenderingLabel = null;
+    public static Dictionary<string, Dictionary<string, string>> CEDict = [];
   }
 }

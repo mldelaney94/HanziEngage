@@ -2,7 +2,6 @@ using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
 using HarmonyLib;
-using UnityEngine;
 
 namespace ShadowrunReturnsLanguageEngage
 {
@@ -16,10 +15,11 @@ namespace ShadowrunReturnsLanguageEngage
 
     private void Awake()
     {
-        Log = Logger;
-        harmony.PatchAll();
-        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
-        UIFontPrintPatchTests.RunAll();
+      Log = Logger;
+      harmony.PatchAll();
+      Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+      UIFontPrintPatchTests.RunAll();
+      Globals.CEDict = CEDictParser.ParseCEDict("C:/dev/HanziEngage/shadowrun-returns/mod/Features/wEDict/CEDictText.txt");
     }
   }
 }

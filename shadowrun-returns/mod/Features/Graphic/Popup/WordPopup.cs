@@ -14,7 +14,8 @@ namespace ShadowrunReturnsLanguageEngage
       label.text = text;
 
       var root = NGUITools.FindInParents<UIRoot>(parentPanel.gameObject);
-      panel.transform.localPosition = root.transform.InverseTransformPoint(worldPos);
+      var isRight = root.transform.InverseTransformPoint(worldPos).x > 0;
+      panel.transform.localPosition = isRight ? new Vector3(100, 0, 0) : new Vector3(-100, 0, 0);
       panel.SetActive(true);
     }
 
@@ -29,10 +30,7 @@ namespace ShadowrunReturnsLanguageEngage
       panel = NGUITools.AddChild<UIPanel>(root.gameObject).gameObject;
 
       var texture = NGUITools.AddWidget<UITexture>(panel.gameObject);
-      texture.alpha = 1;
-      texture.color = Color.black;
-      texture.transform.localScale = new Vector3(300, 400, 1f);
-      texture.material = new Material(Shader.Find("Unlit/Transparent Colored"));
+      texture = SetTexture(texture);
 
       label = NGUITools.AddWidget<UILabel>(panel.gameObject);
 
@@ -46,6 +44,17 @@ namespace ShadowrunReturnsLanguageEngage
       }
 
       panel.name = "SLRETextPopup";
+    }
+
+    private static UITexture SetTexture(UITexture texture)
+    {
+      texture.alpha = 1;
+      texture.color = NGUITools.ParseColor("060606", 0);
+      texture.transform.localScale = new Vector3(300, 400, 1f);
+      texture.material = new Material(Shader.Find("Unlit/Transparent Colored"));
+      texture.depth = 0;
+
+      return texture;
     }
   }
 }
