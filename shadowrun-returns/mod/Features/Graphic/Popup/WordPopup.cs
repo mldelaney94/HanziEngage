@@ -47,6 +47,13 @@ namespace ShadowrunReturnsLanguageEngage
       SetBorderTexture(borderTexture, bgTexture);
 
       label = NGUITools.AddWidget<UILabel>(panel.gameObject);
+      SetLabel(label);
+
+      panel.name = "SLRETextPopup";
+    }
+
+    private static void SetLabel(UILabel label)
+    {
       label.font = FindFont();
       label.lineWidth = TextLineWidth;
       label.pivot = UIWidget.Pivot.TopLeft;
@@ -54,9 +61,6 @@ namespace ShadowrunReturnsLanguageEngage
         -TextLineWidth / 2f,
         new Vector4(0, 0, PanelWidth, PanelHeight).w / 2f,
         -1f);
-
-
-      panel.name = "SLRETextPopup";
     }
 
     private static void SetBackgroundTexture(UITexture texture)
