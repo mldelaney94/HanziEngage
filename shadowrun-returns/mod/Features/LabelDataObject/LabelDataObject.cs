@@ -31,9 +31,9 @@ namespace ShadowrunReturnsLanguageEngage
       var bottom = label.relativeSize.y * (label.pivotOffset.y - 1);
 
       var bounds = new BetterList<Vector3>();
-      bounds.Add(new Vector3(right, 0, 0));
       bounds.Add(Vector3.zero);
-      bounds.Add(new Vector3(0, bottom, 0));
+      bounds.Add(new Vector3(right, bottom, 0));
+      bounds.Add(Vector3.zero);
       bounds.Add(Vector3.zero);
 
       return bounds;
