@@ -62,7 +62,7 @@ namespace ShadowrunReturnsLanguageEngage
 }
 
 
-//=== SLRETextPopup @ 16:36:48 ===
+//=== SLRETextPopup @ 20:02:31 ===
 //[SLRETextPopup]
 //  <UIPanel> clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopup"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
 //  [SLRETextPopupBackground]
@@ -72,18 +72,26 @@ namespace ShadowrunReturnsLanguageEngage
 //    [Texture]
 //      <UITexture> depth=1 pivot=Center color=RGBA(0.384, 0.714, 0.741, 1.000) keepMaterial=True
 //  [SLRETextPopupScrollBar]
-//    <UIScrollBar> onChange=null cachedTransform="SLRETextPopupScrollBar"(Transform) cachedCamera="Camera"(Camera) background="SlicedSprite"(UISlicedSprite) foreground="SlicedSprite"(UISlicedSprite) direction=Vertical inverted=False scrollValue=0 barSize=1 alpha=1
-//    [SlicedSprite]
-//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBarFrame" depth=0 color=RGBA(1.000, 1.000, 1.000, 1.000)
+//    <UIScrollBar> onChange=<delegate(1):UIDraggablePanel.OnVerticalBar> cachedTransform="SLRETextPopupScrollBar"(Transform) cachedCamera="Camera"(Camera) background="Background"(UISlicedSprite) foreground="Foreground"(UISlicedSprite) direction=Vertical inverted=False scrollValue=0 barSize=1 alpha=1
+//    [Background]
+//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBarFrame" depth=0 color=RGBA(0.114, 0.816, 0.871, 1.000)
 //        sprites(55)=[add_Button, arrow_name, bracket, cart_Bar, centerCameraButton, check_box, compass_needle, compass_overlay, cyberLink, icon_character, icon_frame, icon_gear, icon_menu, icon_objectives, iconFrameWithNotification, itemBG, moneySlot, objectiveCompleteIcon, objectiveFailedIcon, pda_button, pda_buttonBG, pda_help_button, pda_help_button_tempcover, primary_obj-icon, removeTab, right_handle, rosterBG, runnerBG, scrollArrow, scrollBar, ...+25 more]
-//    [SlicedSprite]
-//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBar" depth=1 color=RGBA(1.000, 1.000, 1.000, 1.000)
+//      [BoxCollider]
+//        <BoxCollider> center=(0.0, 0.0, 0.0) size=(1.0, 1.0, 1.0)
+//      [EventListener]
+//        <UIEventListener> parameter=null onSubmit=null onClick=null onDoubleClick=null onHover=null onPress=<delegate(1):UIScrollBar.OnPressBackground> onSelect=null onScroll=null onDrag=<delegate(1):UIScrollBar.OnDragBackground> onDrop=null onInput=null
+//    [Foreground]
+//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBar" depth=1 color=RGBA(0.114, 0.816, 0.871, 1.000)
 //        sprites(55)=[add_Button, arrow_name, bracket, cart_Bar, centerCameraButton, check_box, compass_needle, compass_overlay, cyberLink, icon_character, icon_frame, icon_gear, icon_menu, icon_objectives, iconFrameWithNotification, itemBG, moneySlot, objectiveCompleteIcon, objectiveFailedIcon, pda_button, pda_buttonBG, pda_help_button, pda_help_button_tempcover, primary_obj-icon, removeTab, right_handle, rosterBG, runnerBG, scrollArrow, scrollBar, ...+25 more]
+//      [BoxCollider]
+//        <BoxCollider> center=(0.0, 0.0, 0.0) size=(1.0, 1.0, 1.0)
+//      [EventListener]
+//        <UIEventListener> parameter=null onSubmit=null onClick=null onDoubleClick=null onHover=null onPress=<delegate(1):UIScrollBar.OnPressForeground> onSelect=null onScroll=null onDrag=<delegate(1):UIScrollBar.OnDragForeground> onDrop=null onInput=null
 //  [SLRETextPopupTextPanel]
 //    <UIPanel> clipping=HardClip clipRange=(0.0, 0.0, 300.0, 400.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopupTextPanel"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=HardClip clipRange=(0.0, 0.0, 300.0, 400.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
 //    [DraggablePanel]
 //      <UIPanel> clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="DraggablePanel"(Transform) changedLastFrame=False debugInfo=Gizmos clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
-//      <UIDraggablePanel> restrictWithinPanel=True disableDragIfFits=True dragEffect=Momentum scale=(1.0, 1.0, 1.0) scrollWheelFactor=1.5 momentumAmount=35 relativePositionOnReset=(0.0, 0.0) repositionClipping=False horizontalScrollBar=null verticalScrollBar=null showScrollBars=OnlyIfNeeded bounds=Center: (0.0, 0.0, 0.0), Extents: (0.0, 0.0, 0.0) shouldMoveHorizontally=False shouldMoveVertically=False currentMomentum=(0.0, 0.0, 0.0)
+//      <UIDraggablePanel> restrictWithinPanel=True disableDragIfFits=True dragEffect=Momentum scale=(1.0, 1.0, 1.0) scrollWheelFactor=1.5 momentumAmount=35 relativePositionOnReset=(0.0, 0.0) repositionClipping=False horizontalScrollBar=null verticalScrollBar="SLRETextPopupScrollBar"(UIScrollBar) showScrollBars=OnlyIfNeeded bounds=Center: (0.0, 0.0, 0.0), Extents: (0.0, 0.0, 0.0) shouldMoveHorizontally=False shouldMoveVertically=False currentMomentum=(0.0, 0.0, 0.0)
 //    [Label]
 //      <UILabel> text="{{EFD27B}}屏幕{{-}}..." font=MediumNormal fontSize=36 lineWidth=280 depth=0 pivot=TopLeft color=RGBA(1.000, 1.000, 1.000, 1.000)
 //  [DragPanelContents]
@@ -98,7 +106,7 @@ namespace ShadowrunReturnsLanguageEngage
 //  <UIPanel> clipping=SoftClip clipRange=(1.0, 181.0, 394.0, 228.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="ConversationDragPanel"(Transform) changedLastFrame=False debugInfo=Gizmos clipping=SoftClip clipRange=(1.0, 181.0, 394.0, 228.0) clipSoftness=(1.0, 5.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
 //  <UIDraggablePanel> restrictWithinPanel=True disableDragIfFits=True dragEffect=Momentum scale=(0.0, 1.0, 0.0) scrollWheelFactor=1.5 momentumAmount=35 relativePositionOnReset=(0.0, -311.0) repositionClipping=False horizontalScrollBar=null verticalScrollBar="ConversationDragScrollBar"(UIScrollBar) showScrollBars=OnlyIfNeeded bounds=Center: (0.0, 155.0, 1.0), Extents: (195.0, 135.0, 0.0) shouldMoveHorizontally=False shouldMoveVertically=True currentMomentum=(0.0, 0.0, 0.0)
 //  [TextLabel]
-//    <UILabel> text="{{EFD27B}}[​屏幕​弹出来​，​光线​刺​着​你​的​眼睛​。​屏幕​上​的​人​是​......​山姆​华兹..." font=MediumNormal fontSize=36 lineWidth=390 depth=0 pivot=TopLeft color=RGBA(0.800, 0.675, 0.294, 1.000)
+//    <UILabel> text="{{EFD27B}}[​屏幕​弹出..." font=MediumNormal fontSize=36 lineWidth=390 depth=0 pivot=TopLeft color=RGBA(0.800, 0.675, 0.294, 1.000)
 //[ConversationDragScrollBar]
 //  <UIScrollBar> onChange=<delegate(1):UIDraggablePanel.OnVerticalBar> cachedTransform="ConversationDragScrollBar"(Transform) cachedCamera="Camera"(Camera) background="Background"(UISlicedSprite) foreground="Foreground"(UISlicedSprite) direction=Vertical inverted=False scrollValue=0 barSize=0.8074071 alpha=1
 //  [Scalar]

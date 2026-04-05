@@ -14,7 +14,7 @@ namespace ShadowrunReturnsLanguageEngage
     private const int PanelHeight = 400;
     private const int TextLineWidth = 280;
     private const int BorderThickness = 1;
-    private const int PopupVerticalOffset = 100;
+    private const int PopupVerticalOffset = -175;
     private const int PopupRightOffset = 100;
     private const int PopupLeftOffset = -250;
     private const string BackgroundColor = "060606"; // grey-black
@@ -119,7 +119,25 @@ namespace ShadowrunReturnsLanguageEngage
       thumbSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
 
       scrollBar.foreground = thumbSprite;
+      NGUITools.AddChild<BoxCollider>(scrollBar.foreground.gameObject);
+      var fgEventListener = NGUITools.AddChild<UIEventListener>(scrollBar.foreground.gameObject);
+      var onPressForeground = typeof(UIScrollBar).GetMethod("OnPressForeground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      ShadowrunreturnsLanguageEngage.Log.LogInfo($"OnPressForeground resolved: {onPressForeground != null}");
+      fgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, onPressForeground);
+      var onDragForeground = typeof(UIScrollBar).GetMethod("OnDragForeground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      ShadowrunreturnsLanguageEngage.Log.LogInfo($"OnDragForeground resolved: {onDragForeground != null}");
+      fgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, onDragForeground);
+      scrollBar.foreground.name = "Foreground";
       scrollBar.background = trackSprite;
+      NGUITools.AddChild<BoxCollider>(scrollBar.background.gameObject);
+      var bgEventListener = NGUITools.AddChild<UIEventListener>(scrollBar.background.gameObject);
+      var onPressBackground = typeof(UIScrollBar).GetMethod("OnPressBackground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      ShadowrunreturnsLanguageEngage.Log.LogInfo($"OnPressBackground resolved: {onPressBackground != null}");
+      bgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, onPressBackground);
+      var onDragBackground = typeof(UIScrollBar).GetMethod("OnDragBackground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      ShadowrunreturnsLanguageEngage.Log.LogInfo($"OnDragBackground resolved: {onDragBackground != null}");
+      bgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, onDragBackground);
+      scrollBar.background.name = "Background";
 
       return scrollBar;
     }
@@ -137,6 +155,7 @@ namespace ShadowrunReturnsLanguageEngage
       dragPanel.dragEffect = UIDraggablePanel.DragEffect.Momentum;
       dragPanel.scrollWheelFactor = 1.5f;
       dragPanel.disableDragIfFits = true;
+      dragPanel.scale = Vector3.one;
       var onVerticalBar = typeof(UIDraggablePanel).GetMethod("OnVerticalBar", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
       scrollBar.onChange = (UIScrollBar.OnScrollBarChange) Delegate.CreateDelegate(typeof(UIScrollBar.OnScrollBarChange), dragPanel, onVerticalBar);
 
