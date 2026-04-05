@@ -1,7 +1,6 @@
 #pragma warning disable Harmony003 // Harmony non-ref patch parameters modified throws a lot of false positives here
 using HarmonyLib;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 using static UICamera;
 
@@ -34,7 +33,7 @@ namespace ShadowrunReturnsLanguageEngage
 
       if (___mMouse[0].current.name == "ConversationDragContents")
       {
-        DumpComponents(___mMouse[0].current.transform.parent.gameObject);
+        ComponentDumper.Dump(___mMouse[0].current.transform.parent.gameObject);
       }
 
       var textLabel = FindTextLabel(___lastHit.point, out Vector3 textLabelPoint);
@@ -139,52 +138,6 @@ namespace ShadowrunReturnsLanguageEngage
         || c == '（' || c == '）' || c == '─' || c == '＜' || c == '＞'
         || c == '．' || c == '《' || c == '》' || c == '％' || c == '·'
         || c == '\'' || c == '【' || c == '】';
-    }
-
-    internal static void DumpComponents(GameObject go, int depth = 8)
-    {
-      ShadowrunreturnsLanguageEngage.Log.LogInfo("=============");
-      var sb = new StringBuilder();
-      DumpComponentsRecursive(go, depth, sb);
-      ShadowrunreturnsLanguageEngage.Log.LogInfo(sb.ToString());
-    }
-
-    private static void DumpComponentsRecursive(GameObject go, int maxDepth, StringBuilder sb, int currentDepth = 0)
-    {
-      string indent = new string(' ', currentDepth * 2);
-      sb.AppendLine($"{indent}[{go.name}] (active={go.activeSelf}, layer={go.layer})");
-
-      foreach (var comp in go.GetComponents<Component>())
-      {
-        string typeName = comp.GetType().Name;
-        sb.Append($"{indent}  <{typeName}>");
-
-        if (comp is UILabel lbl)
-          sb.Append($" text=\"{Truncate(lbl.text, 40)}\" font={lbl.font?.name} fontSize={lbl.font?.size} lineWidth={lbl.lineWidth} depth={lbl.depth} pivot={lbl.pivot} pivotOffset={lbl.pivotOffset} localPosition={lbl.transform.localPosition}");
-        else if (comp is UISprite spr)
-          sb.Append($" atlas={spr.atlas?.name} spriteName=\"{spr.spriteName}\" depth={spr.depth}");
-        else if (comp is UIPanel panel)
-          sb.Append($" clipping={panel.clipping}");
-        else if (comp is UIWidget widget)
-          sb.Append($" depth={widget.depth} pivot={widget.pivot}");
-        else if (comp is BoxCollider box)
-          sb.Append($" center={box.center} size={box.size}");
-
-        sb.AppendLine();
-      }
-
-      if (currentDepth < maxDepth)
-      {
-        var t = go.transform;
-        for (int i = 0; i < t.childCount; i++)
-          DumpComponentsRecursive(t.GetChild(i).gameObject, maxDepth, sb, currentDepth + 1);
-      }
-    }
-
-    private static string Truncate(string s, int max)
-    {
-      if (string.IsNullOrEmpty(s)) return "";
-      return s.Length <= max ? s : s.Substring(0, max) + "...";
     }
   }
 }
