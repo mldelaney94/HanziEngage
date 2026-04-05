@@ -42,7 +42,10 @@ namespace ShadowrunReturnsLanguageEngage
     private static void EnsureCreated(UIPanel convoPanel)
     {
       var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
-      if (parentPanel == null) Create(root);
+      if (parentPanel == null)
+      {
+        Create(root);
+      }
     }
 
     private static void Position(UIPanel convoPanel, Vector3 worldPos)
@@ -52,7 +55,7 @@ namespace ShadowrunReturnsLanguageEngage
       parentPanel.transform.localPosition = new Vector3(
         convoPanel.transform.localPosition.x + xOffset,
         PopupVerticalOffset,
-        0);
+        convoPanel.transform.localPosition.z);
     }
 
     private static void Create(UIRoot root)
@@ -106,35 +109,46 @@ namespace ShadowrunReturnsLanguageEngage
       var scrollBar = NGUITools.AddChild<UIScrollBar>(parent);
       scrollBar.name = "SLRETextPopupScrollBar";
       scrollBar.direction = UIScrollBar.Direction.Vertical;
+      scrollBar.transform.localPosition = new Vector3(PanelWidth / 2f + 10f, PanelHeight / 2f, 0);
 
-      var trackSprite = NGUITools.AddWidget<UISlicedSprite>(scrollBar.gameObject);
+      var scalar = NGUITools.AddChild(scrollBar.gameObject);
+      scalar.name = "Scalar";
+      scalar.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+
+      var trackSprite = NGUITools.AddWidget<UISlicedSprite>(scalar);
       trackSprite.atlas = pdaAtlas;
       trackSprite.spriteName = "scrollBarFrame";
       trackSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
+      trackSprite.transform.localScale = new Vector3(28f, PanelHeight * 2f, 1f);
+      trackSprite.name = "Background";
+      trackSprite.depth = 1;
+      var bgCollider = trackSprite.gameObject.AddComponent<BoxCollider>();
+      bgCollider.center = new Vector3(0, -0.5f, 0);
+      var bgEventListener = trackSprite.gameObject.AddComponent<UIEventListener>();
 
-      var thumbSprite = NGUITools.AddWidget<UISlicedSprite>(scrollBar.gameObject);
+      var transformNode = NGUITools.AddChild(scalar);
+      transformNode.name = "Transform";
+      transformNode.transform.localPosition = new Vector3(1f, 0, 0);
+
+      var thumbSprite = NGUITools.AddWidget<UISlicedSprite>(transformNode);
       thumbSprite.atlas = pdaAtlas;
       thumbSprite.spriteName = "scrollBar";
       thumbSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
+      thumbSprite.transform.localScale = new Vector3(32f, PanelHeight * 2f, 1f);
+      thumbSprite.name = "Foreground";
+      thumbSprite.depth = 2;
+      var fgCollider = thumbSprite.gameObject.AddComponent<BoxCollider>();
+      fgCollider.center = new Vector3(0, -0.5f, 0);
+      var fgEventListener = thumbSprite.gameObject.AddComponent<UIEventListener>();
 
-      scrollBar.foreground = thumbSprite;
-      scrollBar.foreground.gameObject.AddComponent<BoxCollider>();
-      var fgEventListener = scrollBar.foreground.gameObject.AddComponent<UIEventListener>();
-      var onPressForeground = typeof(UIScrollBar).GetMethod("OnPressForeground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      fgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, onPressForeground);
-      var onDragForeground = typeof(UIScrollBar).GetMethod("OnDragForeground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      fgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, onDragForeground);
-      scrollBar.foreground.name = "Foreground";
-      scrollBar.foreground.depth = 2;
       scrollBar.background = trackSprite;
-      scrollBar.background.gameObject.AddComponent<BoxCollider>();
-      var bgEventListener = scrollBar.background.gameObject.AddComponent<UIEventListener>();
-      var onPressBackground = typeof(UIScrollBar).GetMethod("OnPressBackground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      bgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, onPressBackground);
-      var onDragBackground = typeof(UIScrollBar).GetMethod("OnDragBackground", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-      bgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, onDragBackground);
-      scrollBar.background.name = "Background";
-      scrollBar.background.depth = 1;
+      scrollBar.foreground = thumbSprite;
+
+      var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+      fgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, typeof(UIScrollBar).GetMethod("OnPressForeground", flags));
+      fgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, typeof(UIScrollBar).GetMethod("OnDragForeground", flags));
+      bgEventListener.onPress = (UIEventListener.BoolDelegate) Delegate.CreateDelegate(typeof(UIEventListener.BoolDelegate), scrollBar, typeof(UIScrollBar).GetMethod("OnPressBackground", flags));
+      bgEventListener.onDrag = (UIEventListener.VectorDelegate) Delegate.CreateDelegate(typeof(UIEventListener.VectorDelegate), scrollBar, typeof(UIScrollBar).GetMethod("OnDragBackground", flags));
 
       return scrollBar;
     }
@@ -147,7 +161,6 @@ namespace ShadowrunReturnsLanguageEngage
       panel.clipRange = new Vector4(0, 0, PanelWidth, PanelHeight);
 
       var dragPanel = panel.gameObject.AddComponent<UIDraggablePanel>();
-      dragPanel.transform.localScale = new Vector3(PanelWidth, PanelHeight, 1f);
       dragPanel.verticalScrollBar = scrollBar;
       dragPanel.dragEffect = UIDraggablePanel.DragEffect.Momentum;
       dragPanel.scrollWheelFactor = 1.5f;
@@ -166,7 +179,8 @@ namespace ShadowrunReturnsLanguageEngage
 
       var dragPanelContents = NGUITools.AddChild<UIDragPanelContents>(parent);
       dragPanelContents.draggablePanel = dragPanel;
-      dragPanelContents.gameObject.AddComponent<BoxCollider>();
+      var contentCollider = dragPanelContents.gameObject.AddComponent<BoxCollider>();
+      contentCollider.size = new Vector3(PanelWidth, PanelHeight, 1f);
 
       return panel;
     }

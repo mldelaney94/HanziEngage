@@ -61,6 +61,38 @@ namespace ShadowrunReturnsLanguageEngage
   }
 }
 
+//=== SLRETextPopup @ 23:03:18 ===
+//[SLRETextPopup] pos=(334.0, -175.0, 0.0) scale=(1.0, 1.0, 1.0)
+//  <UIPanel> clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopup"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
+//  [SLRETextPopupTextPanel] pos=(0.0, 0.0, 0.0) scale=(300.0, 400.0, 1.0)
+//    <UIPanel> clipping=HardClip clipRange=(0.0, 0.0, 300.0, 400.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopupTextPanel"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=HardClip clipRange=(0.0, 0.0, 300.0, 400.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
+//    <UIDraggablePanel> restrictWithinPanel=True disableDragIfFits=True dragEffect=Momentum scale=(1.0, 1.0, 1.0) scrollWheelFactor=1.5 momentumAmount=35 relativePositionOnReset=(0.0, 0.0) repositionClipping=False horizontalScrollBar=null verticalScrollBar="SLRETextPopupScrollBar"(UIScrollBar) showScrollBars=OnlyIfNeeded bounds=Center: (-10.0, -250.0, 0.0), Extents: (140.0, 450.0, 0.0) shouldMoveHorizontally=False shouldMoveVertically=True currentMomentum=(0.0, 0.0, 0.0)
+//    [Label] pos=(-150.0, 200.0, 0.0) scale=(100.0, 100.0, 1.0)
+//      <UILabel> text="{{EFD27B}}屏幕{{-}}
+//ping2mu4
+//screen (TV, computer or movie)/" font=MediumNormal fontSize=36 lineWidth=280 depth=0 pivot=TopLeft color=RGBA(1.000, 1.000, 1.000, 1.000)
+//  [DragPanelContents] pos=(0.0, 0.0, 0.0) scale=(1.0, 1.0, 1.0)
+//    <UIDragPanelContents> draggablePanel="SLRETextPopupTextPanel"(UIDraggablePanel)
+//    <BoxCollider> center=(0.0, 0.0, 0.0) size=(1.0, 1.0, 1.0)
+//  [SLRETextPopupBackground] pos=(0.0, 0.0, 0.0) scale=(1.0, 1.0, 1.0)
+//    <UIPanel> clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopupBackground"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
+//    [Texture] pos=(0.0, 0.0, 0.0) scale=(301.0, 401.0, 1.0)
+//      <UITexture> depth=1 pivot=Center color=RGBA(0.384, 0.714, 0.741, 1.000) keepMaterial=True
+//    [Texture] pos=(0.0, 0.0, 0.0) scale=(300.0, 400.0, 1.0)
+//      <UITexture> depth=0 pivot=Center color=RGBA(0.024, 0.024, 0.024, 1.000) keepMaterial=True
+//  [SLRETextPopupScrollBar] pos=(0.0, 0.0, 0.0) scale=(1.0, 1.0, 1.0)
+//    <UIScrollBar> onChange=<delegate(1):UIDraggablePanel.OnVerticalBar> cachedTransform="SLRETextPopupScrollBar"(Transform) cachedCamera="Camera"(Camera) background="Background"(UISlicedSprite) foreground="Foreground"(UISlicedSprite) direction=Vertical inverted=False scrollValue=0 barSize=1 alpha=1
+//    [Foreground] pos=(0.0, 0.0, 0.0) scale=(100.0, 100.0, 1.0)
+//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBar" depth=2 color=RGBA(0.114, 0.816, 0.871, 1.000)
+//        sprites(55)=[add_Button, arrow_name, bracket, cart_Bar, centerCameraButton, check_box, compass_needle, compass_overlay, cyberLink, icon_character, icon_frame, icon_gear, icon_menu, icon_objectives, iconFrameWithNotification, itemBG, moneySlot, objectiveCompleteIcon, objectiveFailedIcon, pda_button, pda_buttonBG, pda_help_button, pda_help_button_tempcover, primary_obj-icon, removeTab, right_handle, rosterBG, runnerBG, scrollArrow, scrollBar, ...+25 more]
+//      <BoxCollider> center=(0.0, 0.0, 0.0) size=(1.0, 1.0, 1.0)
+//      <UIEventListener> parameter=null onSubmit=null onClick=null onDoubleClick=null onHover=null onPress=<delegate(1):UIScrollBar.OnPressForeground> onSelect=null onScroll=null onDrag=<delegate(1):UIScrollBar.OnDragForeground> onDrop=null onInput=null
+//    [Background] pos=(0.0, 0.0, 0.0) scale=(100.0, 100.0, 1.0)
+//      <UISlicedSprite> pdaAtlas=PDA spriteName="scrollBarFrame" depth=1 color=RGBA(0.114, 0.816, 0.871, 1.000)
+//        sprites(55)=[add_Button, arrow_name, bracket, cart_Bar, centerCameraButton, check_box, compass_needle, compass_overlay, cyberLink, icon_character, icon_frame, icon_gear, icon_menu, icon_objectives, iconFrameWithNotification, itemBG, moneySlot, objectiveCompleteIcon, objectiveFailedIcon, pda_button, pda_buttonBG, pda_help_button, pda_help_button_tempcover, primary_obj-icon, removeTab, right_handle, rosterBG, runnerBG, scrollArrow, scrollBar, ...+25 more]
+//      <BoxCollider> center=(0.0, 0.0, 0.0) size=(1.0, 1.0, 1.0)
+//      <UIEventListener> parameter=null onSubmit=null onClick=null onDoubleClick=null onHover=null onPress=<delegate(1):UIScrollBar.OnPressBackground> onSelect=null onScroll=null onDrag=<delegate(1):UIScrollBar.OnDragBackground> onDrop=null onInput=null
+
 //=== SLRETextPopup @ 22:54:56 ===
 //[SLRETextPopup] pos=(334.0, -175.0, -5.0) scale=(1.0, 1.0, 1.0)
 //  <UIPanel> clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) showInPanelTool=True generateNormals=False depthPass=False widgetsAreStatic=False cachedTransform="SLRETextPopup"(Transform) changedLastFrame=True debugInfo=Gizmos clipping=None clipRange=(0.0, 0.0, 0.0, 0.0) clipSoftness=(40.0, 40.0) widgets=System.Collections.Generic.List`1[UIWidget] drawCalls=System.Collections.Generic.List`1[UIDrawCall]
