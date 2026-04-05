@@ -7,6 +7,7 @@ namespace ShadowrunReturnsLanguageEngage
   {
     private static UIPanel parentPanel;
     private static UILabel label;
+    private static UIAtlas pdaAtlas;
 
     private const int PanelWidth = 300;
     private const int PanelHeight = 400;
@@ -15,17 +16,17 @@ namespace ShadowrunReturnsLanguageEngage
     private const int PopupVerticalOffset = 100;
     private const int PopupRightOffset = 100;
     private const int PopupLeftOffset = -250;
-    private const string BackgroundColor = "060606";
-    private const string BorderColor = "62b6bd";
-    private const string WordHighlightColor = "EFD27B";
+    private const string BackgroundColor = "060606"; // grey-black
+    private const string BorderColor = "62b6bd"; // light-blue
+    private const string WordHighlightColor = "EFD27B"; // yellow
 
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
       if (Regex.IsMatch(text, "[0-9a-zA-Z]+")) return;
 
-      var root = EnsureCreated(convoPanel);
+      EnsureCreated(convoPanel);
       label.text = FormatDictionaryDefinition(text);
-      Position(convoPanel, root, worldPos);
+      Position(convoPanel, worldPos);
       parentPanel.gameObject.SetActive(true);
     }
 
@@ -34,16 +35,15 @@ namespace ShadowrunReturnsLanguageEngage
       parentPanel.gameObject?.SetActive(false);
     }
 
-    private static UIRoot EnsureCreated(UIPanel convoPanel)
+    private static void EnsureCreated(UIPanel convoPanel)
     {
       var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
       if (parentPanel == null) Create(root);
-      return root;
     }
 
-    private static void Position(UIPanel convoPanel, UIRoot root, Vector3 worldPos)
+    private static void Position(UIPanel convoPanel, Vector3 worldPos)
     {
-      var isRight = root.transform.InverseTransformPoint(worldPos).x > 0;
+      var isRight = worldPos.x > 0;
       var xOffset = isRight ? PopupRightOffset : PopupLeftOffset;
       parentPanel.transform.localPosition = new Vector3(
         convoPanel.transform.localPosition.x + xOffset,
@@ -55,13 +55,30 @@ namespace ShadowrunReturnsLanguageEngage
     {
       parentPanel = NGUITools.AddChild<UIPanel>(root.gameObject);
       parentPanel.name = "SLRETextPopup";
+      pdaAtlas = GetAtlas();
 
-      CreateBackground(parentPanel.gameObject);
-      label = CreateTextPanel(parentPanel.gameObject);
-      //CreateScrollBar(parentPanel.gameObject);
+      AddBackground(parentPanel.gameObject);
+      var textPanel = AddTextPanel(parentPanel.gameObject);
+      //AddScrollBar(textPanel.gameObject);
     }
 
-    private static void CreateBackground(GameObject parent)
+    private static UIAtlas GetAtlas()
+    {
+      if (pdaAtlas != null) return pdaAtlas;
+
+      UIAtlas[] atlasses = (UIAtlas[]) Resources.FindObjectsOfTypeAll(typeof(UIAtlas));
+      foreach (var atlas in atlasses)
+      {
+        if (atlas.name == "PDA")
+        {
+          return atlas;
+        }
+      }
+
+      return null;
+    }
+
+    private static void AddBackground(GameObject parent)
     {
       var panel = NGUITools.AddChild<UIPanel>(parent);
 
@@ -79,7 +96,7 @@ namespace ShadowrunReturnsLanguageEngage
       border.material = CreateFlatMaterial(renderQueue: bg.material.renderQueue - 1);
     }
 
-    private static UILabel CreateTextPanel(GameObject parent)
+    private static UIPanel AddTextPanel(GameObject parent)
     {
       var panel = NGUITools.AddChild<UIPanel>(parent);
       panel.clipping = UIDrawCall.Clipping.HardClip;
@@ -89,18 +106,21 @@ namespace ShadowrunReturnsLanguageEngage
       dragPanel.disableDragIfFits = true;
       dragPanel.transform.localScale = new Vector3(PanelWidth, PanelHeight, 1f);
 
-      var textLabel = NGUITools.AddWidget<UILabel>(panel.gameObject);
-      textLabel.font = FindFont();
-      textLabel.lineWidth = TextLineWidth;
-      textLabel.pivot = UIWidget.Pivot.TopLeft;
-      textLabel.transform.localPosition = new Vector3(-PanelWidth / 2f, PanelHeight / 2f, 0);
+      // we need this label so we can set the text on it dynamically later
+      // avoiding having to recreate these static instances
+      label = NGUITools.AddWidget<UILabel>(panel.gameObject);
+      label.font = FindFont();
+      label.lineWidth = TextLineWidth;
+      label.pivot = UIWidget.Pivot.TopLeft;
+      label.transform.localPosition = new Vector3(-PanelWidth / 2f, PanelHeight / 2f, 0);
 
-      return textLabel;
+      return panel;
     }
 
-    private static void CreateScrollBar(GameObject parent)
+    private static void AddScrollBar(GameObject parent)
     {
       var scrollBar = NGUITools.AddChild<UIScrollBar>(parent);
+      scrollBar.direction = UIScrollBar.Direction.Vertical;
 
       var collider = scrollBar.gameObject.AddComponent<BoxCollider>();
       collider.center = Vector3.zero;
