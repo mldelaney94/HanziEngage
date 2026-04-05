@@ -2,6 +2,7 @@ using BepInEx;
 using BepInEx.Logging;
 using BepInEx.Unity.Mono;
 using HarmonyLib;
+using System.IO;
 
 namespace ShadowrunReturnsLanguageEngage
 {
@@ -16,6 +17,7 @@ namespace ShadowrunReturnsLanguageEngage
     {
       Log = Logger;
       Globals.CEDict = CEDictParser.ParseCEDict("./BepInEx/plugins/cedict_ts.u8");
+      File.Delete(ComponentDumper.OutputPath);
 
       harmony.PatchAll();
       UIFontPrintPatchTests.RunAll();

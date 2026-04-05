@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ namespace ShadowrunReturnsLanguageEngage
     private const string BackgroundColor = "060606"; // grey-black
     private const string BorderColor = "62b6bd"; // light-blue
     private const string WordHighlightColor = "EFD27B"; // yellow
+    private const string ScrollBarColour = "1DD0DE";
 
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
@@ -28,6 +30,8 @@ namespace ShadowrunReturnsLanguageEngage
       label.text = FormatDictionaryDefinition(text);
       Position(convoPanel, worldPos);
       parentPanel.gameObject.SetActive(true);
+
+      ComponentDumper.Dump(parentPanel.gameObject);
     }
 
     public static void Hide()
@@ -58,8 +62,9 @@ namespace ShadowrunReturnsLanguageEngage
       pdaAtlas = GetAtlas();
 
       AddBackground(parentPanel.gameObject);
-      var textPanel = AddTextPanel(parentPanel.gameObject);
-      //AddScrollBar(textPanel.gameObject);
+      var scrollBar = AddScrollBar(parentPanel.gameObject);
+      AddTextPanel(parentPanel.gameObject, scrollBar);
+      AddDragPanelContent(parentPanel.gameObject);
     }
 
     private static UIAtlas GetAtlas()
@@ -81,6 +86,7 @@ namespace ShadowrunReturnsLanguageEngage
     private static void AddBackground(GameObject parent)
     {
       var panel = NGUITools.AddChild<UIPanel>(parent);
+      panel.name = "SLRETextPopupBackground";
 
       var bg = NGUITools.AddWidget<UITexture>(panel.gameObject);
       bg.color = NGUITools.ParseColor(BackgroundColor, 0);
@@ -96,15 +102,43 @@ namespace ShadowrunReturnsLanguageEngage
       border.material = CreateFlatMaterial(renderQueue: bg.material.renderQueue - 1);
     }
 
-    private static UIPanel AddTextPanel(GameObject parent)
+    private static UIScrollBar AddScrollBar(GameObject parent)
+    {
+      var scrollBar = NGUITools.AddChild<UIScrollBar>(parent);
+      scrollBar.name = "SLRETextPopupScrollBar";
+      scrollBar.direction = UIScrollBar.Direction.Vertical;
+
+      var trackSprite = NGUITools.AddWidget<UISlicedSprite>(scrollBar.gameObject);
+      trackSprite.atlas = pdaAtlas;
+      trackSprite.spriteName = "scrollBarFrame";
+      trackSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
+
+      var thumbSprite = NGUITools.AddWidget<UISlicedSprite>(scrollBar.gameObject);
+      thumbSprite.atlas = pdaAtlas;
+      thumbSprite.spriteName = "scrollBar";
+      thumbSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
+
+      scrollBar.foreground = thumbSprite;
+      scrollBar.background = trackSprite;
+
+      return scrollBar;
+    }
+
+    private static UIPanel AddTextPanel(GameObject parent, UIScrollBar scrollBar)
     {
       var panel = NGUITools.AddChild<UIPanel>(parent);
+      panel.name = "SLRETextPopupTextPanel";
       panel.clipping = UIDrawCall.Clipping.HardClip;
       panel.clipRange = new Vector4(0, 0, PanelWidth, PanelHeight);
 
       var dragPanel = NGUITools.AddChild<UIDraggablePanel>(panel.gameObject);
-      dragPanel.disableDragIfFits = true;
       dragPanel.transform.localScale = new Vector3(PanelWidth, PanelHeight, 1f);
+      dragPanel.verticalScrollBar = scrollBar;
+      dragPanel.dragEffect = UIDraggablePanel.DragEffect.Momentum;
+      dragPanel.scrollWheelFactor = 1.5f;
+      dragPanel.disableDragIfFits = true;
+      var onVerticalBar = typeof(UIDraggablePanel).GetMethod("OnVerticalBar", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+      scrollBar.onChange = (UIScrollBar.OnScrollBarChange) Delegate.CreateDelegate(typeof(UIScrollBar.OnScrollBarChange), dragPanel, onVerticalBar);
 
       // we need this label so we can set the text on it dynamically later
       // avoiding having to recreate these static instances
@@ -114,19 +148,16 @@ namespace ShadowrunReturnsLanguageEngage
       label.pivot = UIWidget.Pivot.TopLeft;
       label.transform.localPosition = new Vector3(-PanelWidth / 2f, PanelHeight / 2f, 0);
 
+      var dragPanelContents = NGUITools.AddChild<UIDragPanelContents>(parent);
+      dragPanelContents.draggablePanel = dragPanel;
+
+      NGUITools.AddChild<BoxCollider>(dragPanelContents.gameObject);
+
       return panel;
     }
 
-    private static void AddScrollBar(GameObject parent)
+    private static void AddDragPanelContent(GameObject parent)
     {
-      var scrollBar = NGUITools.AddChild<UIScrollBar>(parent);
-      scrollBar.direction = UIScrollBar.Direction.Vertical;
-
-      var collider = scrollBar.gameObject.AddComponent<BoxCollider>();
-      collider.center = Vector3.zero;
-      collider.size = new Vector2(PanelWidth, PanelHeight);
-
-      scrollBar.gameObject.AddComponent<UIEventListener>();
     }
 
     private static Material CreateFlatMaterial(int renderQueue)
