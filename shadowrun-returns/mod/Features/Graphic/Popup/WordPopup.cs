@@ -2,6 +2,16 @@ using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+// This class essentially just tries to replicate 'ConversationDragContents'
+// from the game, which is the primary text component in the conversation UI.
+// That's why its a bit of a slog, because
+// ultimately, we're trying to code a UI component that would have been
+// created in a visual editor.
+
+// We want to create it from scratch, rather than say, deep cloning
+// 'ConversationDragContents', because it needs to appear from
+// multiple different places in the game, and that component won't
+// always be available.
 namespace ShadowrunReturnsLanguageEngage
 {
   public static class WordPopup
@@ -180,7 +190,7 @@ namespace ShadowrunReturnsLanguageEngage
       var dragPanelContents = NGUITools.AddChild<UIDragPanelContents>(parent);
       dragPanelContents.draggablePanel = dragPanel;
       var contentCollider = dragPanelContents.gameObject.AddComponent<BoxCollider>();
-      contentCollider.size = new Vector3(PanelWidth, PanelHeight, 1f);
+      contentCollider.size = Vector3.one;
 
       return panel;
     }
