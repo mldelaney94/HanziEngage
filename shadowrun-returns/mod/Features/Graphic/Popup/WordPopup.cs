@@ -34,7 +34,7 @@ namespace ShadowrunReturnsLanguageEngage
     private const string BackgroundColor = "060606"; // grey-black
     private const string BorderColor = "62b6bd"; // light-blue
     private const string WordHighlightColor = "EFD27B"; // yellow
-    private const string ScrollBarColour = "1DD0DE";
+    private const string ScrollBarColour = "1DD0DE"; // Light-blue, same as in-game scroll-bar colour
 
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
