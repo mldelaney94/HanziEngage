@@ -16,7 +16,6 @@ namespace ShadowrunReturnsLanguageEngage
       [
         "ConversationDragContents",
         "ConversationResponse(Clone)",
-        "ResponseDragPanelTop",
         "ObjectivesDragPanelContents"
       ];
 
