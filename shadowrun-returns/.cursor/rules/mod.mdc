@@ -39,12 +39,15 @@ BepInEx 6.0.0-be.754, HarmonyX 2.10.2, Unity 4.2.0f4, .NET 3.5, Assembly-CSharp.
 - **`UICamera.eventReceiverMask`** — which layers NGUI uses for **UI raycasts**. In practice often **one** layer (e.g. `0x00001000` = bit 12 = layer 12). This is **not** the same value as `cullingMask`; both are expected to differ.
 - **`UICamera.mLayerMask`** — may be `0` or unused in this build; prefer **`eventReceiverMask`** when interpreting UI hit filtering.
 - **`UIWidget.depth`** — primary sort key when NGUI chooses among **multiple UI collider hits** on the same setup. It does **not** move geometry; it breaks ties after colliders qualify.
-- **Physics ray along the UI camera** — the **closest** collider along the ray (and NGUI's sort rules) wins. A full-screen **`ConversationAnchor/Background`** can beat a popup that lives only under **`UIRoot`** if it is in front in **world/local Z** or wins the combined sort. **Reparenting** under the same anchor and nudging **local Z** can be necessary; widget depth alone may be insufficient across separate UI branches.
-- **Collider without `UIWidget` on the same GameObject** — NGUI may not associate a proper widget depth with that hit (e.g. bare `BoxCollider` on `UIDragPanelContents` only). Prefer **`UITexture`** (nearly invisible) **on the same GameObject** as `BoxCollider` + `UIDragPanelContents` so raycast ordering matches other UI.
+- **Physics ray along the UI camera** — the **closest** collider along the ray (and NGUI's sort rules) wins. A full-screen **`ConversationAnchor/Background`** can beat a popup that lives only under **`UIRoot`** because those branches end up at **different positions along the ray**—not because `UIRoot` is higher in the GameObject hierarchy. **Fix for `WordPopup`:** parent under the **same transform** as the panel that opened the popup (**`convoPanel.transform.parent`**), i.e. the same subtree as `Background`. Z tweaks while staying under `UIRoot` did not fix that loss in practice.
 - **Drag hit volume** — vanilla `ConversationDragContents` uses **`BoxCollider.size (1,1,1)`** with **`transform.localScale`** set to the drag rectangle **`(width, height, 1)`**. Scale `(1,1,1)` on the contents object yields a **tiny** collider even if textures look full-size.
 - **Clipping** — scroll panels clip children. Overlays must respect panel ancestry and depth/Z relative to blocking widgets (e.g. conversation chrome).
 
 **Popup hierarchy (typical)** — `UIRoot` → root `UIPanel` → nested panels, `UILabel`, `UITexture`, `UIDragPanelContents`, etc. See `Features/Graphic/Popup/WordPopup.cs`.
+
+**WordPopup (dictionary popup) — hit testing**
+- **Parent transform:** On each `Show`, re-parent the popup root to **`convoPanel.transform.parent`** when non-null (else `UIRoot`). That matches **`Background.transform.parent`** when the conversation `UIPanel` is a direct child of the anchor—**this reparenting is what fixed** hover/scroll vs full-screen `Background`; no need to find `ConversationAnchor` by name if `Show` already receives the right `UIPanel`.
+- **`UIWidget.depth`:** Chrome (`UITexture`), `UILabel`, and scrollbar sprites use explicit depths in `WordPopup.cs` (vs low-depth anchor chrome; scrollbar above label where they overlap) for tie-breaks **within** that subtree.
 
 **Matching vanilla drag UI** — `UIDragPanelContents` only needs `draggablePanel` pointing at the correct `UIDraggablePanel`; parent object identity can differ. Vanilla `UIDraggablePanel` **`scale`** may be `(0, 1, 0)` vs `(1, 1, 1)` for axis gating; worth matching if scroll/drag feels wrong.
 

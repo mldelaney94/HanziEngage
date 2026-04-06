@@ -29,12 +29,19 @@ namespace ShadowrunReturnsLanguageEngage
     private const int TextLineWidth = 280;
     private const int BorderThickness = 1;
     private const int PopupVerticalOffset = -175;
-    private const int PopupRightOffset = 100;
-    private const int PopupLeftOffset = -250;
+    private const int PopupRightOffset = -400;
+    private const int PopupLeftOffset = 450;
     private const string BackgroundColor = "060606"; // grey-black
     private const string BorderColor = "62b6bd"; // light-blue
     private const string WordHighlightColor = "EFD27B"; // yellow
     private const string ScrollBarColour = "1DD0DE"; // Light-blue, same as in-game scroll-bar colour
+
+    // Tie-break vs low-depth anchor chrome; scrollbar above label where they overlap.
+    private const int DepthPopupBackground = 100;
+    private const int DepthPopupBorder = 101;
+    private const int DepthTextLabel = 110;
+    private const int DepthScrollTrack = 125;
+    private const int DepthScrollThumb = 126;
 
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
@@ -64,12 +71,21 @@ namespace ShadowrunReturnsLanguageEngage
 
     private static void Position(UIPanel convoPanel, Vector3 worldPos)
     {
+      var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
+      // Same parent as the panel that opened us (usually ConversationAnchor — sibling of Background) so ray depth matches that UI subtree.
+      Transform parentTransform = convoPanel.transform.parent != null
+        ? convoPanel.transform.parent
+        : root.transform;
+      if (parentPanel.transform.parent != parentTransform)
+        parentPanel.transform.parent = parentTransform;
+
       var isRight = worldPos.x > 0;
       var xOffset = isRight ? PopupRightOffset : PopupLeftOffset;
+      var clp = convoPanel.transform.localPosition;
       parentPanel.transform.localPosition = new Vector3(
-        convoPanel.transform.localPosition.x + xOffset,
+        clp.x + xOffset,
         PopupVerticalOffset,
-        convoPanel.transform.localPosition.z);
+        clp.z);
     }
 
     private static void Create(UIRoot root)
@@ -105,11 +121,13 @@ namespace ShadowrunReturnsLanguageEngage
       panel.name = "SLRETextPopupBackground";
 
       var bg = NGUITools.AddWidget<UITexture>(panel.gameObject);
+      bg.depth = DepthPopupBackground;
       bg.color = NGUITools.ParseColor(BackgroundColor, 0);
       bg.transform.localScale = new Vector3(PanelWidth, PanelHeight, 1f);
       bg.material = CreateFlatMaterial(renderQueue: 1);
 
       var border = NGUITools.AddWidget<UITexture>(panel.gameObject);
+      border.depth = DepthPopupBorder;
       border.color = NGUITools.ParseColor(BorderColor, 0);
       border.transform.localScale = new Vector3(
         PanelWidth + BorderThickness,
@@ -135,7 +153,7 @@ namespace ShadowrunReturnsLanguageEngage
       trackSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
       trackSprite.transform.localScale = new Vector3(28f, PanelHeight * 2f, 1f);
       trackSprite.name = "ScrollbarBackground";
-      trackSprite.depth = 1;
+      trackSprite.depth = DepthScrollTrack;
       var bgCollider = trackSprite.gameObject.AddComponent<BoxCollider>();
       bgCollider.center = new Vector3(0, -0.5f, 0);
       var bgEventListener = trackSprite.gameObject.AddComponent<UIEventListener>();
@@ -150,7 +168,7 @@ namespace ShadowrunReturnsLanguageEngage
       thumbSprite.color = NGUITools.ParseColor(ScrollBarColour, 0);
       thumbSprite.transform.localScale = new Vector3(32f, PanelHeight * 2f, 1f);
       thumbSprite.name = "ScrollbarForeground";
-      thumbSprite.depth = 2;
+      thumbSprite.depth = DepthScrollThumb;
       var fgCollider = thumbSprite.gameObject.AddComponent<BoxCollider>();
       fgCollider.center = new Vector3(0, -0.5f, 0);
       var fgEventListener = thumbSprite.gameObject.AddComponent<UIEventListener>();
@@ -186,6 +204,7 @@ namespace ShadowrunReturnsLanguageEngage
       // we need this label so we can set the text on it dynamically later
       // avoiding having to recreate these static instances
       label = NGUITools.AddWidget<UILabel>(panel.gameObject);
+      label.depth = DepthTextLabel;
       label.font = FindFont();
       label.lineWidth = TextLineWidth;
       label.pivot = UIWidget.Pivot.TopLeft;
