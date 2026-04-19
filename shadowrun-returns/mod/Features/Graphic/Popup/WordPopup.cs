@@ -37,6 +37,11 @@ namespace ShadowrunReturnsLanguageEngage
     private const string WordHighlightColor = "EFD27B"; // yellow
     private const string ScrollBarColour = "1DD0DE"; // Light-blue, same as in-game scroll-bar colour
 
+    public static void Hide()
+    {
+      textBox.gameObject?.SetActive(false);
+    }
+
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
       // skip pinyin
@@ -47,11 +52,6 @@ namespace ShadowrunReturnsLanguageEngage
       SetTextBoxPosition(convoPanel, worldPos);
     }
 
-    public static void Hide()
-    {
-      textBox.gameObject?.SetActive(false);
-    }
-
     private static void CreateTextBoxIfNotExists(UIPanel convoPanel)
     {
       if (textBox == null)
@@ -59,26 +59,6 @@ namespace ShadowrunReturnsLanguageEngage
         var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
         Create(root);
       }
-    }
-
-    private static void SetTextBoxText(string text)
-    {
-      label.text = FormatDictionaryDefinition(text);
-    }
-
-    private static void SetTextBoxPosition(UIPanel convoPanel, Vector3 worldPos)
-    {
-      // Same parent as the panel that opened us (usually ConversationAnchor — sibling of Background) so ray depth matches that UI subtree.
-      var parentTransform = convoPanel.transform.parent;
-      textBox.transform.parent = parentTransform;
-
-      var isRight = worldPos.x > 0;
-      var xOffset = isRight ? PopupRightOffset : PopupLeftOffset;
-      var localPos = convoPanel.transform.localPosition;
-      textBox.transform.localPosition = new Vector3(
-        localPos.x + xOffset,
-        PopupVerticalOffset,
-        localPos.z);
     }
 
     private static void Create(UIRoot root)
@@ -125,6 +105,14 @@ namespace ShadowrunReturnsLanguageEngage
         PanelHeight + BorderThickness,
         1f);
       border.material = CreateFlatMaterial(renderQueue: bg.material.renderQueue - 1);
+    }
+
+    private static Material CreateFlatMaterial(int renderQueue)
+    {
+      return new Material(Shader.Find("Unlit/Transparent Colored"))
+      {
+        renderQueue = renderQueue
+      };
     }
 
     private static UIScrollBar AddScrollBar(GameObject parent)
@@ -213,20 +201,16 @@ namespace ShadowrunReturnsLanguageEngage
       return panel;
     }
 
-    private static Material CreateFlatMaterial(int renderQueue)
-    {
-      return new Material(Shader.Find("Unlit/Transparent Colored"))
-      {
-        renderQueue = renderQueue
-      };
-    }
-
     private static UILabel FindLabel()
     {
       foreach (var key in Globals.LabelRegistry.Keys)
       {
         if (key.transform != null)
         {
+          // no idea how I came to the conclusion that this was the one I wanted...
+          // just remember that I used something else that made more sense at the time
+          // but it matched multiple labels and then I must've found that this one
+          // always matched it...
           if (key.transform.localScale != Vector3.one)
           {
             return key;
@@ -234,6 +218,26 @@ namespace ShadowrunReturnsLanguageEngage
         }
       }
       return null;
+    }
+
+    private static void SetTextBoxText(string text)
+    {
+      label.text = FormatDictionaryDefinition(text);
+    }
+
+    private static void SetTextBoxPosition(UIPanel convoPanel, Vector3 worldPos)
+    {
+      // Same parent as the panel that opened us (usually ConversationAnchor — sibling of Background) so ray depth matches that UI subtree.
+      var parentTransform = convoPanel.transform.parent;
+      textBox.transform.parent = parentTransform;
+
+      var isRight = worldPos.x > 0;
+      var xOffset = isRight ? PopupRightOffset : PopupLeftOffset;
+      var localPos = convoPanel.transform.localPosition;
+      textBox.transform.localPosition = new Vector3(
+        localPos.x + xOffset,
+        PopupVerticalOffset,
+        localPos.z);
     }
 
     // This belongs here because it formats the string for display
