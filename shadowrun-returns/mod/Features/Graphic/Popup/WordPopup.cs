@@ -22,7 +22,7 @@ namespace ShadowrunReturnsLanguageEngage
 {
   public static class WordPopup
   {
-    private static UIPanel parentPanel;
+    private static UIPanel textBox;
     private static UILabel label;
     private static UIAtlas pdaAtlas;
 
@@ -39,42 +39,43 @@ namespace ShadowrunReturnsLanguageEngage
 
     public static void Show(string text, UIPanel convoPanel, Vector3 worldPos)
     {
+      // skip pinyin
       if (Regex.IsMatch(text, "[0-9a-zA-Z]+")) return;
 
-      EnsureCreated(convoPanel);
-      label.text = FormatDictionaryDefinition(text);
-      Position(convoPanel, worldPos);
-      parentPanel.gameObject.SetActive(true);
-
-
-      ComponentDumper.Dump(parentPanel.gameObject);
+      CreateTextBoxIfNotExists(convoPanel);
+      SetTextBoxText(text);
+      SetTextBoxPosition(convoPanel, worldPos);
     }
 
     public static void Hide()
     {
-      parentPanel.gameObject?.SetActive(false);
+      textBox.gameObject?.SetActive(false);
     }
 
-    private static void EnsureCreated(UIPanel convoPanel)
+    private static void CreateTextBoxIfNotExists(UIPanel convoPanel)
     {
-      var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
-      if (parentPanel == null)
+      if (textBox == null)
       {
+        var root = NGUITools.FindInParents<UIRoot>(convoPanel.gameObject);
         Create(root);
       }
     }
 
-    private static void Position(UIPanel convoPanel, Vector3 worldPos)
+    private static void SetTextBoxText(string text)
+    {
+      label.text = FormatDictionaryDefinition(text);
+    }
+
+    private static void SetTextBoxPosition(UIPanel convoPanel, Vector3 worldPos)
     {
       // Same parent as the panel that opened us (usually ConversationAnchor — sibling of Background) so ray depth matches that UI subtree.
       var parentTransform = convoPanel.transform.parent;
-      if (parentPanel.transform.parent != parentTransform)
-        parentPanel.transform.parent = parentTransform;
+      textBox.transform.parent = parentTransform;
 
       var isRight = worldPos.x > 0;
       var xOffset = isRight ? PopupRightOffset : PopupLeftOffset;
       var localPos = convoPanel.transform.localPosition;
-      parentPanel.transform.localPosition = new Vector3(
+      textBox.transform.localPosition = new Vector3(
         localPos.x + xOffset,
         PopupVerticalOffset,
         localPos.z);
@@ -82,13 +83,13 @@ namespace ShadowrunReturnsLanguageEngage
 
     private static void Create(UIRoot root)
     {
-      parentPanel = NGUITools.AddChild<UIPanel>(root.gameObject);
-      parentPanel.name = "SLRETextPopup";
+      textBox = NGUITools.AddChild<UIPanel>(root.gameObject);
+      textBox.name = "SLRETextPopup";
       pdaAtlas = GetAtlas();
 
-      AddBackground(parentPanel.gameObject);
-      var scrollBar = AddScrollBar(parentPanel.gameObject);
-      AddTextPanel(parentPanel.gameObject, scrollBar);
+      AddBackground(textBox.gameObject);
+      var scrollBar = AddScrollBar(textBox.gameObject);
+      AddTextPanel(textBox.gameObject, scrollBar);
     }
 
     private static UIAtlas GetAtlas()
