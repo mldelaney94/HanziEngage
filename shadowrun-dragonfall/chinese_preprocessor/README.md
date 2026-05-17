@@ -1,6 +1,8 @@
 # Shadowrun Returns Preprocessor
 A tool for manipulating the Chinese translations of *Shadowrun Returns* for language-learning purposes. It converts the original Chinese `.po` file into a `.mo` file that contains both the Chinese text and its pinyin, along with a series of cleanup passes for punctuation, templates, and proper names.
 
+Translation used is a fan-translated one from [here](https://github.com/fmwizard/shadowrun-dragonfall-zh)
+
 ![without pinyin picture](img/without_pinyin.png "Without pinyin")
 ![with pinyin picture](img/with_pinyin.png "With pinyin")
 

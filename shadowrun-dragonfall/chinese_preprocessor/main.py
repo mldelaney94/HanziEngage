@@ -210,11 +210,11 @@ def main():
   SPECIAL_TOKENS = MARKUP_TOKENS | TEMPLATE_TOKENS | pyer.special_tokens
   REPLACEMENTS = PROPER_NAME_REPLACEMENTS | PUNCTUATION_REPLACEMENTS | MISC_REPLACEMENTS
 
-  seattle_pofile = add_pinyin('./materials/translations/zh_seattle_original.po', d, SPECIAL_TOKENS, REPLACEMENTS)
-  deadmanswitch_pofile = add_pinyin('./materials/translations/zh_deadmanswitch_original.po', d, SPECIAL_TOKENS, REPLACEMENTS)
+  berlin_pofile = add_pinyin('./materials/translations/berlin.po', d, SPECIAL_TOKENS, REPLACEMENTS)
+  dragonfall_extended_pofile = add_pinyin('./materials/translations/dragonfall_extended.po', d, SPECIAL_TOKENS, REPLACEMENTS)
 
-  seattle_pofile.save_as_mofile('zh_seattle.mo')
-  deadmanswitch_pofile.save_as_mofile('zh_deadmanswitch.mo')
+  berlin_pofile.save_as_mofile('zh_berlin.mo')
+  dragonfall_extended_pofile.save_as_mofile('zh_dragonfall_extended.mo')
 
 def add_pinyin(path_to_pofile, d, SPECIAL_TOKENS, REPLACEMENTS):
   pofile = polib.pofile(path_to_pofile)
